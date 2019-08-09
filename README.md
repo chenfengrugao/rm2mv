@@ -11,7 +11,8 @@ e.g. rm2mv xx.v            delete a file
 
 # Usage
 
-```
+```shell
+#cshell
 mkdir ~/bin
 cd ~/bin
 git clone https://github.com/chenfengrugao/rm2mv
