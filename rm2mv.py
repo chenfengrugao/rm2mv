@@ -53,11 +53,11 @@ for arg in sys.argv[1:]:
         
     # delete with --force
     elif arg == '--force':
-        print('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
+        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
 
     # delete files in .Trash
     elif re.search(r'/\.Trash/', arg):
-        print('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
+        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
 
     # clean .Trash
     elif arg == '--clean':
