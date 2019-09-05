@@ -13,6 +13,9 @@
 #   1.7 16/9/2013 change default to silence mode
 #                 move to trash only when the files exist.
 #   1.8 9/8/2019  implement with python
+#   1.9 5/9/2019  fix bug of cleaning ~/.Trash
+#                 add feature: calc the size of ~/.Trash with linux cmd `du -sh ~/.Trash`
+#
 
 import os
 import sys
@@ -22,8 +25,8 @@ import re
 import time
 import datetime
 
-Ver = "1.8"
-LastUpd = "Aug. 9, 2019"
+Ver = "1.9"
+LastUpd = "Sept. 5, 2019"
 Author = "BillC"
 
 MyFileList = []
@@ -46,7 +49,9 @@ for arg in sys.argv[1:]:
         print("     rm2mv -rf rtl         delete a directory")
         print("     rm2mv --force simv*   delete file or dir not going to ~/.Trash")
         print("     rm2mv --clean         clean files 1 week before from ~/.Trash")
+        print("     rm2mv --status        calculate the size of ~/.Trash")
         sys.exit()
+        
     elif arg == '--version':
         print('rm2mv v' + Ver)
         sys.exit()
@@ -59,14 +64,20 @@ for arg in sys.argv[1:]:
     elif re.search(r'/\.Trash/', arg):
         os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
 
-    # clean .Trash
+    # clean .Trash before 1 week
+    elif arg == '--status':
+        os.system('du -sh /home/{}/.Trash'.format(user))
+        sys.exit()
+        
+    # clean .Trash before 1 week
     elif arg == '--clean':
         dirs = os.listdir('/home/{}/.Trash'.format(user))
         for dt in dirs:
             if((datetime.datetime.now() - datetime.datetime(int(dt[0:4]), int(dt[4:6]), int(dt[6:8]))).days > 7):
-                shutil.rmtree(dt)
+                print('remove /home/{}/.Trash/{}'.format(user, dt))
+                shutil.rmtree('/home/{}/.Trash/{}'.format(user, dt))
         sys.exit()
-
+        
     # save filelist to list
     elif not arg.startswith('-'):
         # protect /xxx and /home/xxx
