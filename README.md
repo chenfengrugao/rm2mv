@@ -10,6 +10,7 @@ rm2mv xx.v            delete a file
 rm2mv -rf rtl         delete a directory
 rm2mv --force simv*   delete file or dir not going to ~/.Trash
 rm2mv --clean         clean files 1 week before from ~/.Trash
+rm2mv --status        check the size of ~/.Trash
 ```
 
 # Usage
