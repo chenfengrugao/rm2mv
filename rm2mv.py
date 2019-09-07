@@ -27,8 +27,8 @@ import re
 import time
 import datetime
 
-Ver = "1.9"
-LastUpd = "Sept. 5, 2019"
+Ver = "1.10"
+LastUpd = "Sept. 7, 2019"
 Author = "BillC"
 
 MyFileList = []
