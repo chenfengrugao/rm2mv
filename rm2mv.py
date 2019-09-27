@@ -17,6 +17,7 @@
 #                  add feature: calc the size of ~/.Trash with linux cmd `du -sh ~/.Trash`
 #   1.10 7/9/2019  replace os.system('mv xx') with shutil.move to handle file with special chars.
 #                  check ~/.Trash if exists first, when --clean or --status
+#   1.11 27/9/2019 add exception handle for named pipe, call os.remove instead of shutil.move
 #
 
 import os
@@ -27,8 +28,8 @@ import re
 import time
 import datetime
 
-Ver = "1.10"
-LastUpd = "Sept. 7, 2019"
+Ver = "1.11"
+LastUpd = "Sept. 27, 2019"
 Author = "BillC"
 
 MyFileList = []
@@ -107,5 +108,9 @@ if len(MyFileList) != 0:
         os.makedirs(target)
     #print('mv {} {}/'.format(' '.join(MyFileList), target))
     for f in MyFileList:
-        shutil.move(f, target)
+        if os.popen('ls -l ' + f).readline().startswith('p'):
+            os.remove(f)
+        else:
+            shutil.move(f, target)
+            
 
