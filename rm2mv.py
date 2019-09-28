@@ -19,6 +19,16 @@
 #                  check ~/.Trash if exists first, when --clean or --status
 #   1.11 27/9/2019 add exception handle for named pipe, call os.remove instead of shutil.move
 #
+# License :
+#   This script is published by MIT License. 
+#   Read more about MIT License: https://github.com/chenfengrugao/rm2mv/blob/master/LICENSE
+#
+# Warning :
+#   This rm2mv script has not been fully tested, please do complete tests before commerical use.
+#
+# Bug Report :
+#   Please report issues on https://github.com/chenfengrugao/rm2mv/issues, thanks.
+#
 
 import os
 import sys
@@ -40,11 +50,12 @@ HelpFlag = 0
 # get current login user name
 user = getpass.getuser()
 
+# get current date and time for folder's name
 date_time_dir = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
-#print(date_time_dir)
 
-# handle options
+# handle arguments and options
 for arg in sys.argv[1:]:
+    # print command help documents and exit
     if arg == '-h' or arg == '-help' or arg == '--help':
         print("rm2mv v" + Ver)
         print("a script to replace system rm, moves dirs or files to ~/.Trash instead of deleting them directly.")
@@ -55,26 +66,19 @@ for arg in sys.argv[1:]:
         print("     rm2mv --status        calculate the size of ~/.Trash")
         sys.exit()
         
+    # print command version and exit
     elif arg == '--version':
         print('rm2mv v' + Ver)
         sys.exit()
         
-    # delete with --force
-    elif arg == '--force':
-        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
-
-    # delete files in .Trash
-    elif re.search(r'/\.Trash/', arg):
-        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
-
-    # clean .Trash before 1 week
+    # show trash size and exit
     elif arg == '--status':
         if not os.path.exists('/home/{}/.Trash'.format(user)):
             sys.exit()
         os.system('du -sh /home/{}/.Trash'.format(user))
         sys.exit()
         
-    # clean .Trash before 1 week
+    # clean .Trash before 1 week and exit
     elif arg == '--clean':
         if not os.path.exists('/home/{}/.Trash'.format(user)):
             sys.exit()
@@ -85,9 +89,17 @@ for arg in sys.argv[1:]:
                 shutil.rmtree('/home/{}/.Trash/{}'.format(user, dt))
         sys.exit()
         
+    # delete directly if with arg '--force'
+    elif arg == '--force':
+        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
+
+    # delete files in .Trash
+    elif re.search(r'/\.Trash/', arg):
+        os.system('/bin/rm -rf ' + ' '.join(sys.argv[1:]))
+
     # save filelist to list
     elif not arg.startswith('-'):
-        # protect /xxx and /home/xxx
+        # protect /xxx and /home/xxx, only show warning message if you are deleting some root path directories
         if arg == '/' or \
            arg == '~' or \
            re.match(r'/home/\w+/?$', arg) or \
@@ -102,14 +114,16 @@ for arg in sys.argv[1:]:
     else:
         MyIgnoreList.append(arg)
 
+# finally, delete or move one by one
 if len(MyFileList) != 0:
     target = '/home/{}/.Trash/{}'.format(user, date_time_dir)
     if not os.path.exists(target):
         os.makedirs(target)
-    #print('mv {} {}/'.format(' '.join(MyFileList), target))
     for f in MyFileList:
+        # remove it if the file is named pipe, because shutil.move cannot move this type of file
         if os.popen('ls -l ' + f).readline().startswith('p'):
             os.remove(f)
+        # move to ~/.Trash
         else:
             shutil.move(f, target)
             
