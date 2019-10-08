@@ -13,7 +13,21 @@ rm2mv --clean         clean files 1 week before from ~/.Trash
 rm2mv --status        check the size of ~/.Trash
 ```
 
-# Usage
+# Installation
+
+First, make sure you have installed python3, and then check you have the follow modules:
+
+``` python
+import os
+import sys
+import shutil
+import getpass
+import re
+import time
+import datetime
+```
+
+Second, install rm2mv:
 
 ```shell
 #cshell
@@ -23,6 +37,7 @@ git clone https://github.com/chenfengrugao/rm2mv
 ln -s rm2mv/rm2mv.py rm
 setenv ~/bin:$PATH
 ```
+
 
 
 
