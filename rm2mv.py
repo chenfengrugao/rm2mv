@@ -18,6 +18,8 @@
 #   1.10 7/9/2019  replace os.system('mv xx') with shutil.move to handle file with special chars.
 #                  check ~/.Trash if exists first, when --clean or --status
 #   1.11 27/9/2019 add exception handle for named pipe, call os.remove instead of shutil.move
+#   1.12 8/10/2019 if a file exists in ~/.Trash, ignore it directly
+#                    to avoid deleting one file twice.
 #
 
 import os
@@ -28,8 +30,8 @@ import re
 import time
 import datetime
 
-Ver = "1.11"
-LastUpd = "Sept. 27, 2019"
+Ver = "1.12"
+LastUpd = "Oct. 8, 2019"
 Author = "BillC"
 
 MyFileList = []
@@ -108,8 +110,13 @@ if len(MyFileList) != 0:
         os.makedirs(target)
     #print('mv {} {}/'.format(' '.join(MyFileList), target))
     for f in MyFileList:
-        if os.popen('ls -l ' + f).readline().startswith('p'):
+        # avoid deleting one file twice
+        if os.path.exists(target + '/' + f): 
+            pass
+        # handle special file type
+        elif os.popen('ls -l ' + f).readline().startswith('p'):
             os.remove(f)
+        # move to ~/.Trash
         else:
             shutil.move(f, target)
             
