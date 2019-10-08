@@ -131,5 +131,5 @@ if len(MyFileList) != 0:
         # move to ~/.Trash
         else:
             shutil.move(f, target)
-            
+
 
