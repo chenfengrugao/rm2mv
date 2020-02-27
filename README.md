@@ -35,6 +35,7 @@ mkdir ~/bin
 cd ~/bin
 git clone https://github.com/chenfengrugao/rm2mv
 ln -s rm2mv/rm2mv.py rm
+chmod +x rm
 setenv ~/bin:$PATH
 ```
 
